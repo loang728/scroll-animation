@@ -2,57 +2,105 @@
 body, html {
     margin: 0;
     padding: 0;
-	font-family: Arial, sans-serif;
-	background:#000;
-	color:#fff;
-}
-body{height: 100%; 	font-size:30px; padding:100px; scroll-behaviour:smooth; }
-
-.container h3{
-	color:red;
-	font-size:30p
-}
-.line{
-	width:1px;
-	height:100px
-}
-.circle{ 
-border:1px solid red; 
-border-radius:50%;
-width:30px; 
-height:30px;
-position:absolute;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: #fff;
 }
 
+body {
+    height: 100%;
+    font-size: 30px;
+    padding: 50px;
+    scroll-behavior: smooth;
+}
 
-.container {
+.container h3 {
+    color: red;
+    font-size: 30px; /* Corrected typo */
+}
+
+.line {
+    width: 1px;
+    height: 100px;
+}
+
+.circle {
+    border: 1px solid red;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+}
+
+.image-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: relative;
+    background: #000;
+    width: 1200px;
+    height: 750px;
+}
 
-    transition: transform 0.5s ease-in-out;
+.image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.2s;
+    opacity: 0;
 }
- .image-container{
-	display:flex;
-	position:relative;
-    width: 100%;
-    min-height: 600px;
-background:#000;
-padding: 100px 0;
-}
- 
- .image-container img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1200px; //original image size
-  height: 750px;
-  transition: opacity 0.2s;
-  opacity: 0;
-  
-}
+
 .image-container img.active {
-  opacity: 1;
-  visibility: visible;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 575.98px) {
+    .image-container {
+        width: 300px; /* Fixed width for extra small devices */
+        height: 187.5px; /* Maintain aspect ratio 1200:750 = 16:10 */
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .image-container {
+        width: 400px; /* Fixed width for small devices */
+        height: 250px; /* Maintain aspect ratio 1200:750 = 16:10 */
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .image-container {
+        width: 600px; /* Fixed width for medium devices */
+        height: 375px; /* Maintain aspect ratio 1200:750 = 16:10 */
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* For large devices (default) */
+@media (min-width: 992px) {
+    .image-container {
+        width: 1200px; /* Default width for large devices */
+        height: 750px; /* Maintain aspect ratio */
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+    }
+	
 }
