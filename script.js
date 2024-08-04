@@ -1,58 +1,50 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let lastScrollTop = 0;
-    let intersecElement = false;
-    let numScrolled = 0;
-    const scrollStep = 5; // Number of pixels to scroll per step
-    const images = document.querySelectorAll(".image-container img"); // Images array
-    const targetElement = document.getElementById("imagesequence"); // Intersecting element
-
-    // Intersection Observer to check if the target element is visible
-    new IntersectionObserver(
+	let numScrolled = 0;  //Index for the active image
+	const images = document.querySelectorAll(".image-container img"); // Images array
+	const targetElement = document.getElementById("imagewrapper"); // Intersecting element
+	
+	 new IntersectionObserver(
         (entries) => entries.forEach((entry) => intersecElement = entry.isIntersecting),
-        { threshold: 0.3 } // Visible part of the element
+        { threshold: 0.2 } // Visible part of the element
     ).observe(targetElement);
 
-    // Function for modifying scroll when element is intersecting
-    const handleScroll = (delta) => {
-        let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        let newScrollTop = currentScrollTop;
+	// Function for modifying scroll 
+	const handleScroll = (delta) => {
+		const rect = targetElement.getBoundingClientRect();
 
-        if (intersecElement) {
-            if (delta < 0 && numScrolled > 0) {
-                numScrolled--;
-                newScrollTop = Math.max(currentScrollTop - scrollStep, 0);
-            } else if (delta > 0 && numScrolled < images.length - 1) {
-                numScrolled++;
-                newScrollTop = currentScrollTop + scrollStep;
-            } else {
-                console.log("unmodified scroll");
-                return;
-            }
+		if (intersecElement) { //Checking if element has reached or passed top of page  before starting animation
+			if (delta < 0 && numScrolled > 0) { //Check Scrolling up and active image isnt the starting one, has to show previous image
+				numScrolled--;
+			} else if (delta > 0 && numScrolled < images.length - 1) { //Checks if scrolling down, and active image isnt last one 
+				numScrolled++;
+			} else {
+				console.log("unmodified scroll"); //Animation is not active , keep scrolling
+				return;
+			}
+ 
+			event.preventDefault(); // Prevents scroll from scrolling 
+			targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			console.log("Modified scroll", numScrolled);
+			images.forEach((img, idx) => img.classList.toggle("active", idx === numScrolled)); // Shows the desired image
+			// Scroll the page to keep the target element 100px below the top
+		}
+	};
 
-            event.preventDefault();
-            // Smoothly scroll to the new position
-            window.scrollTo({ top: newScrollTop, behavior: "smooth" });
+	// Add event listener for the wheel event (desktop)
+	window.addEventListener("wheel", (event) => handleScroll(Math.sign(event.deltaY)), {
+		passive: false
+	});
 
-            // Update lastScrollTop
-            lastScrollTop = newScrollTop;
+	// Add touch event listeners (mobile)
+	let touchStartY = 0;
 
-            // Update the active image
-            console.log("Modified scroll", numScrolled);
-            images.forEach((img, idx) => img.classList.toggle("active", idx === numScrolled));
-        }
-    };
+	window.addEventListener("touchstart", (event) => touchStartY = event.touches[0].clientY);
 
-    // Add event listener for the wheel event (desktop)
-    window.addEventListener("wheel", (event) => handleScroll(Math.sign(event.deltaY)), { passive: false });
-
-    // Add touch event listeners (mobile)
-    let touchStartY = 0;
-
-    window.addEventListener("touchstart", (event) => touchStartY = event.touches[0].clientY);
-
-    window.addEventListener("touchmove", (event) => {
-        let touchEndY = event.touches[0].clientY;
-        handleScroll(Math.sign(touchStartY - touchEndY));
-        touchStartY = touchEndY; // Update touchStartY for continuous scrolling
-    }, { passive: false });
+	window.addEventListener("touchmove", (event) => {
+		let touchEndY = event.touches[0].clientY;
+		handleScroll(Math.sign(touchStartY - touchEndY));
+		touchStartY = touchEndY; // Update touchStartY for continuous scrolling
+	}, {
+		passive: false
+	});
 });
